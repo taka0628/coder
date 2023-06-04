@@ -15,6 +15,7 @@ typedef long long lli;
 #define ZERO(a) memset(a, 0, sizeof(a))
 #define MINUS(a) memset(a, 0xff, sizeof(a))
 #define MEMSET(v, h) memset((v), h, sizeof(v))
+#define BEG_END(v) v.begin(), v.end()
 
 using namespace std;
 
@@ -42,41 +43,35 @@ int gcd(int a, int b) { return b ? gcd(b, a % b) : a; }
 // for (int i = 0; i < n; i++)
 //   cin >> s[i];
 
-int div_cnt(const int n) {
-  int cnt = 0;
-  int temp = n;
-  int div = 0;
-  while (1) {
-    div = temp % 2;
-    if (div != 0 || temp == 0) {
-      return cnt;
-    }
-    temp = temp / 2;
-    cnt++;
-  }
-
-  return cnt;
-}
+struct P {
+  int x;
+  int y;
+};
 
 int main() {
-  int A, B, C, X;
-  int n;
+  int N;
+  cin >> N;
 
-  cin >> A >> B >> C >> X;
+  vector<int> T(N);
+  vector<P> X(N);
+  rep(i, N) { cin >> T[i] >> X[i].x >> X[i].y; }
 
-  int cnt = 0;
+  P current = {0, 0};
+  int passed = 0;
 
-  for (int a = 0; a <= A; a++) {
-    for (int b = 0; b <= B; b++) {
-      for (int c = 0; c <= C; c++) {
-        int val = 500 * a + 100 * b + 50 * c;
-        if (val == X) {
-          cnt++;
-        }
-      }
+  rep(i, N) {
+    int sum = X[i].x + X[i].y;
+    P temp = {abs(current.x - X[i].x), abs(current.y - X[i].y)};
+    int dist = temp.x + temp.y;
+    if ((T[i] - passed) < dist || (abs(dist - (T[i] - passed)) % 2) == 1) {
+      cout << "No" << endl;
+      return 0;
     }
+    current.x = X[i].x;
+    current.y = X[i].y;
+    passed = T[i];
   }
-  cout << cnt << endl;
+  cout << "Yes" << endl;
 
   return 0;
 }
